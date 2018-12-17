@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.support.multidex.MultiDex;
 import android.util.Log;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.blankj.utilcode.util.Utils;
 import com.ns.yc.lifehelper.comment.config.AppConfig;
 import com.ns.yc.lifehelper.comment.Constant;
@@ -21,7 +22,7 @@ import io.realm.RealmConfiguration;
 
 /**
  * <pre>
- *     @author      杨充
+ *     @author 杨充
  *     blog         https://www.jianshu.com/p/53017c3fc75d
  *     time         2015/08/22
  *     desc         Application
@@ -36,14 +37,15 @@ public class BaseApplication extends Application {
     private PoolThread executor;
     private Realm realm;
 
+    public BaseApplication() {
+    }
+
     public static synchronized BaseApplication getInstance() {
         if (null == instance) {
             instance = new BaseApplication();
         }
         return instance;
     }
-
-    public BaseApplication(){}
 
     /**
      * 这个最先执行
@@ -64,13 +66,13 @@ public class BaseApplication extends Application {
         super.onCreate();
         instance = this;
         Utils.init(this);
+        initArouter();
         BaseLifecycleCallback.getInstance().init(this);
         initRealm();
         initThreadPool();
         //在子线程中初始化
         InitializeService.start(this);
     }
-
 
     /**
      * 程序终止的时候执行
@@ -79,16 +81,24 @@ public class BaseApplication extends Application {
     public void onTerminate() {
         Log.d("Application", "onTerminate");
         super.onTerminate();
-        if(realm!=null){
+        if (realm != null) {
             realm.close();
             realm = null;
         }
-        if(executor!=null){
+        if (executor != null) {
             executor.close();
             executor = null;
         }
     }
 
+    /**
+     * onConfigurationChanged
+     */
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        Log.d("Application", "onConfigurationChanged");
+        super.onConfigurationChanged(newConfig);
+    }
 
     /**
      * 低内存的时候执行
@@ -110,27 +120,17 @@ public class BaseApplication extends Application {
         super.onTrimMemory(level);
     }
 
-
-    /**
-     * onConfigurationChanged
-     */
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        Log.d("Application", "onConfigurationChanged");
-        super.onConfigurationChanged(newConfig);
-    }
-
     /**
      * 初始化数据库
      */
     private void initRealm() {
-        File file ;
+        File file;
         try {
             file = new File(Constant.ExternalStorageDirectory, Constant.DATABASE_FILE_PATH_FOLDER);
             //noinspection ResultOfMethodCallIgnored
             file.mkdirs();
         } catch (Exception e) {
-            Log.e("异常",e.getMessage());
+            Log.e("异常", e.getMessage());
         }
         Realm.init(instance);
         RealmConfiguration realmConfig = new RealmConfiguration
@@ -140,15 +140,6 @@ public class BaseApplication extends Application {
                 .deleteRealmIfMigrationNeeded()
                 .build();
         realm = Realm.getInstance(realmConfig);
-    }
-
-
-    /**
-     * 获取Realm数据库对象
-     * @return              realm对象
-     */
-    public Realm getRealmHelper() {
-        return realm;
     }
 
     /**
@@ -163,11 +154,28 @@ public class BaseApplication extends Application {
                 .build();
     }
 
+    private void initArouter() {
+        // 这两行必须写在init之前，否则这些配置在init过程中将无效
+        ARouter.openLog();     // 打印日志
+        ARouter.openDebug();   // 开启调试模式(如果在InstantRun模式下运行，必须开启调试模式！线上版本需要关闭,否则有安全风险)¬
+        ARouter.init(instance);
+    }
+
+    /**
+     * 获取Realm数据库对象
+     *
+     * @return realm对象
+     */
+    public Realm getRealmHelper() {
+        return realm;
+    }
+
     /**
      * 获取线程池管理器对象，统一的管理器维护所有的线程池
-     * @return                      executor对象
+     *
+     * @return executor对象
      */
-    public PoolThread getExecutor(){
+    public PoolThread getExecutor() {
         return executor;
     }
 

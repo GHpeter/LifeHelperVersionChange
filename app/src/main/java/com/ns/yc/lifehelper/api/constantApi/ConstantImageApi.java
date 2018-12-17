@@ -17,67 +17,8 @@ import java.util.List;
  */
 public class ConstantImageApi {
 
-    /**
-     * 初始化页面随机图片
-     */
-    private static final String SPALSH_01 = "http://or4ceksby.bkt.clouddn.com/b_1.jpg";
-    private static final String SPALSH_02 = "http://or4ceksby.bkt.clouddn.com/b_2.jpg";
-    private static final String SPALSH_03 = "http://or4ceksby.bkt.clouddn.com/b_3.jpg";
-    private static final String SPALSH_04 = "http://or4ceksby.bkt.clouddn.com/b_4.jpg";
-    private static final String SPALSH_05 = "http://or4ceksby.bkt.clouddn.com/b_5.jpg";
-    private static final String SPALSH_06 = "http://or4ceksby.bkt.clouddn.com/b_6.jpg";
-    private static final String SPALSH_07 = "http://or4ceksby.bkt.clouddn.com/b_7.jpg";
-    private static final String SPALSH_08 = "http://or4ceksby.bkt.clouddn.com/b_8.jpg";
-    private static final String SPALSH_09 = "http://or4ceksby.bkt.clouddn.com/b_9.jpg";
-    private static final String SPALSH_10 = "http://or4ceksby.bkt.clouddn.com/b_10.jpg";
-    public static final String[] SPALSH_URLS = new String[]{
-            SPALSH_01, SPALSH_02, SPALSH_03, SPALSH_04,
-            SPALSH_05, SPALSH_06, SPALSH_07, SPALSH_08,
-            SPALSH_09,SPALSH_10
-    };
-
     // 电影栏头部的图片
     public static final String MOVIE_URL_01 = "http://ojyz0c8un.bkt.clouddn.com/one_01.png";
-
-    private static final int[] priorityIcons = new int[]{
-            R.drawable.ic_priority_1,
-            R.drawable.ic_priority_2,
-            R.drawable.ic_priority_3,
-            R.drawable.ic_priority_4
-    };
-    public static int[] createPriorityIcons() {
-        return priorityIcons;
-    }
-
-
-    private static final Integer[] ides = new Integer[]{
-            R.drawable.bg_autumn_tree_min,
-            R.drawable.bg_kites_min,
-            R.drawable.bg_lake_min,
-            R.drawable.bg_leaves_min,
-            R.drawable.bg_magnolia_trees_min,
-            R.drawable.bg_solda_min,
-            R.drawable.bg_tree_min,
-            R.drawable.bg_tulip_min
-    };
-    public static List<Integer> createBgImg() {
-        return Arrays.asList(ides);
-    }
-
-    private static final Integer[] smallImages = new Integer[]{
-            R.drawable.bg_small_autumn_tree_min,
-            R.drawable.bg_small_kites_min,
-            R.drawable.bg_small_lake_min,
-            R.drawable.bg_small_leaves_min,
-            R.drawable.bg_small_magnolia_trees_min,
-            R.drawable.bg_small_solda_min,
-            R.drawable.bg_small_tree_min,
-            R.drawable.bg_small_tulip_min
-    };
-    public static List<Integer> createSmallImage() {
-        return Arrays.asList(smallImages);
-    }
-
     /**
      * 注意：
      * 集合类如果仅仅有添加元素的方法，而没有相应的删除机制，导致内存被占用。
@@ -96,7 +37,58 @@ public class ConstantImageApi {
             R.drawable.bg_small_tree_min,
             R.drawable.bg_small_tulip_min
     };
-    public static ArrayList<Integer> getNarrowImage(){
+    /**
+     * 初始化页面随机图片
+     */
+    private static final String SPALSH_01 = "http://www.pptbz.com/pptpic/UploadFiles_6909/201211/2012111719294197.jpg";
+    private static final String SPALSH_02 = "http://img5.duitang.com/uploads/item/201411/07/20141107164412_v284V.jpeg";
+    private static final String SPALSH_03 = "http://img5.imgtn.bdimg.com/it/u=746215187,1522527078&fm=26&gp=0.jpg";
+    private static final String SPALSH_04 = "http://img1.imgtn.bdimg.com/it/u=2488133216,866026667&fm=200&gp=0.jpg";
+    private static final String SPALSH_05 = "http://img2.imgtn.bdimg.com/it/u=2157261095,901350627&fm=26&gp=0.jpg";
+    public static final String[] SPALSH_URLS = new String[]{
+            SPALSH_01, SPALSH_02, SPALSH_03, SPALSH_04,
+            SPALSH_05
+    };
+    private static final int[] priorityIcons = new int[]{
+            R.drawable.ic_priority_1,
+            R.drawable.ic_priority_2,
+            R.drawable.ic_priority_3,
+            R.drawable.ic_priority_4
+    };
+    private static final Integer[] ides = new Integer[]{
+            R.drawable.bg_autumn_tree_min,
+            R.drawable.bg_kites_min,
+            R.drawable.bg_lake_min,
+            R.drawable.bg_leaves_min,
+            R.drawable.bg_magnolia_trees_min,
+            R.drawable.bg_solda_min,
+            R.drawable.bg_tree_min,
+            R.drawable.bg_tulip_min
+    };
+    private static final Integer[] smallImages = new Integer[]{
+            R.drawable.bg_small_autumn_tree_min,
+            R.drawable.bg_small_kites_min,
+            R.drawable.bg_small_lake_min,
+            R.drawable.bg_small_leaves_min,
+            R.drawable.bg_small_magnolia_trees_min,
+            R.drawable.bg_small_solda_min,
+            R.drawable.bg_small_tree_min,
+            R.drawable.bg_small_tulip_min
+    };
+
+    public static int[] createPriorityIcons() {
+        return priorityIcons;
+    }
+
+    public static List<Integer> createBgImg() {
+        return Arrays.asList(ides);
+    }
+
+    public static List<Integer> createSmallImage() {
+        return Arrays.asList(smallImages);
+    }
+
+    public static ArrayList<Integer> getNarrowImage() {
         ArrayList<Integer> arrayList = new ArrayList<>();
         for (int i = 0; i < NarrowImage.length; i++) {
             arrayList.add(NarrowImage[i]);

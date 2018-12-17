@@ -9,9 +9,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.ns.yc.lifehelper.R;
+import com.ns.yc.lifehelper.base.RouterUtils;
 import com.ns.yc.lifehelper.comment.Constant;
 import com.ns.yc.lifehelper.base.mvp.BaseActivity;
 import com.yc.cn.ycbannerlib.BannerView;
@@ -35,6 +37,7 @@ import cn.ycbjie.ycstatusbarlib.bar.YCAppBar;
  *     revise:
  * </pre>
  */
+@Route(path = RouterUtils.SPLASH)
 public class SplashPagerActivity extends BaseActivity {
 
 
@@ -51,6 +54,67 @@ public class SplashPagerActivity extends BaseActivity {
         YCAppBar.translucentStatusBar(this, true);
     }
 
+    @Override
+    public int getContentView() {
+        return R.layout.activity_splash_pager;
+    }
+
+    @Override
+    public void initView() {
+        if (SPUtils.getInstance(Constant.SP_NAME).getBoolean(Constant.KEY_FIRST_SPLASH, true)) {
+            initGetImage();
+            initBanner();
+        } else {
+
+            RouterUtils.actNotParams(RouterUtils.GUIDE);
+            finish();
+        }
+    }
+
+    private void initGetImage() {
+        imageId = new ArrayList<>();
+        TypedArray images = this.getResources().obtainTypedArray(R.array.splash_image);
+        for (int a = 0; a < 4; a++) {
+            int image = images.getResourceId(a, R.drawable.bg_small_kites_min);
+            imageId.add(image);
+        }
+        images.recycle();
+    }
+
+    private void initBanner() {
+        banner.setPlayDelay(0);
+        banner.setHintGravity(1);
+        banner.setHintPadding(SizeUtil.dip2px(this, 10), 0,
+                SizeUtil.dip2px(this, 10), SizeUtil.dip2px(this, 30));
+        banner.setOnPageListener(new OnPageListener() {
+            @Override
+            public void onPageChange(int position) {
+                if (position >= 0 && position == imageId.size() - 1) {
+                    btnGo.setVisibility(View.VISIBLE);
+                } else {
+                    btnGo.setVisibility(View.GONE);
+                }
+            }
+        });
+        banner.setAdapter(new ImageNormalAdapter());
+    }
+
+    @Override
+    public void initListener() {
+        btnGo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActivityUtils.startActivity(SelectFollowActivity.class);
+                finish();
+                SPUtils.getInstance(Constant.SP_NAME).put(Constant.KEY_FIRST_SPLASH, false);
+            }
+        });
+    }
+
+    @Override
+    public void initData() {
+
+    }
 
     /**
      * 屏蔽返回键
@@ -66,70 +130,6 @@ public class SplashPagerActivity extends BaseActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-
-    @Override
-    public int getContentView() {
-        return R.layout.activity_splash_pager;
-    }
-
-    @Override
-    public void initView() {
-        if(SPUtils.getInstance(Constant.SP_NAME).getBoolean(Constant.KEY_FIRST_SPLASH,true)){
-            initGetImage();
-            initBanner();
-        } else {
-            ActivityUtils.startActivity(GuideActivity.class);
-            finish();
-        }
-    }
-
-    private void initGetImage() {
-        imageId = new ArrayList<>();
-        TypedArray images = this.getResources().obtainTypedArray(R.array.splash_image);
-        for(int a=0 ; a<4 ; a++){
-            int image = images.getResourceId(a, R.drawable.bg_small_kites_min);
-            imageId.add(image);
-        }
-        images.recycle();
-    }
-
-    @Override
-    public void initListener() {
-        btnGo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ActivityUtils.startActivity(SelectFollowActivity.class);
-                finish();
-                SPUtils.getInstance(Constant.SP_NAME).put(Constant.KEY_FIRST_SPLASH,false);
-            }
-        });
-    }
-
-    @Override
-    public void initData() {
-
-    }
-
-
-    private void initBanner() {
-        banner.setPlayDelay(0);
-        banner.setHintGravity(1);
-        banner.setHintPadding(SizeUtil.dip2px(this,10),0,
-                SizeUtil.dip2px(this,10),SizeUtil.dip2px(this,30));
-        banner.setOnPageListener(new OnPageListener() {
-            @Override
-            public void onPageChange(int position) {
-                if(position>=0 && position==imageId.size()-1){
-                    btnGo.setVisibility(View.VISIBLE);
-                }else {
-                    btnGo.setVisibility(View.GONE);
-                }
-            }
-        });
-        banner.setAdapter(new ImageNormalAdapter());
-    }
-
-
     private class ImageNormalAdapter extends AbsDynamicPagerAdapter {
 
         @Override
@@ -144,7 +144,7 @@ public class SplashPagerActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return imageId ==null ? 0 :imageId.size();
+            return imageId == null ? 0 : imageId.size();
         }
     }
 

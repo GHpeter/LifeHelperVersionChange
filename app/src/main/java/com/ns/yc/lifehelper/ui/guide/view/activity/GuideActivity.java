@@ -6,9 +6,11 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.ns.yc.lifehelper.R;
+import com.ns.yc.lifehelper.base.RouterUtils;
 import com.ns.yc.lifehelper.base.mvp.BaseActivity;
 import com.ns.yc.lifehelper.ui.guide.contract.GuideContract;
 import com.ns.yc.lifehelper.ui.guide.presenter.GuidePresenter;
@@ -29,6 +31,8 @@ import cn.ycbjie.ycstatusbarlib.bar.YCAppBar;
  *     revise:
  * </pre>
  */
+
+@Route(path = RouterUtils.GUIDE)
 public class GuideActivity extends BaseActivity<GuidePresenter> implements GuideContract.View ,View.OnClickListener {
 
     @BindView(R.id.iv_splash_ad)
