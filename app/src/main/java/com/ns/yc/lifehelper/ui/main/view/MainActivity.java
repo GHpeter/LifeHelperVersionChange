@@ -2,6 +2,7 @@ package com.ns.yc.lifehelper.ui.main.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -10,6 +11,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -21,11 +23,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.ActivityUtils;
 import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.ns.yc.lifehelper.R;
+import com.ns.yc.lifehelper.base.RouterUtils;
 import com.ns.yc.lifehelper.comment.factory.FragmentFactory;
 import com.ns.yc.lifehelper.base.adapter.BasePagerAdapter;
 import com.ns.yc.lifehelper.base.mvp.BaseActivity;
@@ -60,10 +64,15 @@ import pub.devrel.easypermissions.EasyPermissions;
  *     revise:
  * </pre>
  */
+@Route(path = RouterUtils.MAIN)
 public class MainActivity extends BaseActivity<MainPresenter> implements View.OnClickListener
         , EasyPermissions.PermissionCallbacks, MainContract.View {
 
 
+    public static final int HOME = 0;
+    public static final int FIND = 1;
+    public static final int DATA = 2;
+    public static final int USER = 3;
     @BindView(R.id.fl_title_menu)
     FrameLayout flTitleMenu;
     @BindView(R.id.tv_title)
@@ -84,7 +93,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements View.On
     NavigationView navView;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
-
     private ImageView ivAvatar;
     private LinearLayout llNavScanDownload;
     private LinearLayout llNavFeedback;
@@ -94,20 +102,76 @@ public class MainActivity extends BaseActivity<MainPresenter> implements View.On
     private LinearLayout llNavHomepage;
     private View view;
     private long time;
-
     private MainContract.Presenter presenter = new MainPresenter(this);
+    /**
+     * 初始化侧滑菜单
+     */
+    private LinearLayout ll_dayNightTheme;
+    /**
+     * 自定义菜单点击事件
+     */
 
-    public static final int HOME = 0;
-    public static final int FIND = 1;
-    public static final int DATA = 2;
-    public static final int USER = 3;
-    @IntDef({HOME,FIND,DATA,USER})
-    private  @interface PageIndex{}
+
+    private PerfectClickListener listener = new PerfectClickListener() {
+        @Override
+        protected void onNoDoubleClick(final View v) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+            drawerLayout.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    switch (v.getId()) {
+                        case R.id.iv_avatar:
+
+                            break;
+                        // 主页
+                        case R.id.ll_nav_homepage:
+                            String[] keyStr = new String[]{"url"};
+                            Object[] objects = new Object[]{""};
+                            RouterUtils.actWithParams(RouterUtils.WEBVIEW, keyStr, objects);
+                            break;
+                        //扫码下载
+                        case R.id.ll_nav_scan_download:
+
+                            break;
+                        // 问题反馈
+                        case R.id.ll_nav_feedback:
+                            RouterUtils.actNotParams(RouterUtils.MEFEEDBACK);
+                            break;
+                        // 关于
+                        case R.id.ll_nav_about:
+                            RouterUtils.actNotParams(RouterUtils.ABOUTME);
+                            break;
+                        // 个人
+                        case R.id.ll_nav_login:
+                            RouterUtils.actNotParams(RouterUtils.MEPERSON);
+                            break;
+                        case R.id.ll_nav_video:
+                            ToastUtil.showToast(MainActivity.this, "后期接入讯飞语音");
+                            break;
+                        case R.id.setting:
+                            RouterUtils.actNotParams(RouterUtils.MESETTING);
+                            break;
+                        case R.id.quit:
+                            AppManager.getAppManager().appExit(false);
+                            break;
+
+                        case R.id.ll_dayNightTheme://日夜间模式
+
+
+                        default:
+                            break;
+                    }
+                }
+            }, 0);
+        }
+    };
+    private TextView tv_theme;
 
     /**
      * 跳转首页
-     * @param context               上下文
-     * @param selectIndex           添加注解限制输入值
+     *
+     * @param context     上下文
+     * @param selectIndex 添加注解限制输入值
      */
     public static void startActivity(Context context, @PageIndex int selectIndex) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -121,56 +185,16 @@ public class MainActivity extends BaseActivity<MainPresenter> implements View.On
         context.startActivity(intent);
     }
 
-    /**
-     * 处理onNewIntent()，以通知碎片管理器 状态未保存。
-     * 如果您正在处理新的意图，并且可能是 对碎片状态进行更改时，要确保调用先到这里。
-     * 否则，如果你的状态保存，但活动未停止，则可以获得 onNewIntent()调用，发生在onResume()之前，
-     * 并试图 此时执行片段操作将引发IllegalStateException。 因为碎片管理器认为状态仍然保存。
-     * @param intent intent
-     */
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        if(intent!=null){
-            int selectIndex = intent.getIntExtra("selectIndex", HOME);
-            vpHome.setCurrentItem(selectIndex);
-        }
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         InputMethodManagerLeakUtils.fixInputMethodManagerLeak(this);
     }
 
-
     @Override
     public int getContentView() {
         return R.layout.activity_main;
     }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu_home, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_capture:
-                ToastUtil.showToast(this,"二维码扫描");
-                break;
-            case R.id.action_about_us:
-                ActivityUtils.startActivity(AboutMeActivity.class);
-                break;
-            default:
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 
     @Override
     public void initView() {
@@ -181,7 +205,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements View.On
         initNav();
         initPermissions();
     }
-
 
     @Override
     public void initListener() {
@@ -196,30 +219,17 @@ public class MainActivity extends BaseActivity<MainPresenter> implements View.On
             llNavFeedback.setOnClickListener(listener);
             llNavAbout.setOnClickListener(listener);
             llNavLogin.setOnClickListener(listener);
+            ll_dayNightTheme.setOnClickListener(listener);
             llNavVideo.setOnClickListener(listener);
             setting.setOnClickListener(listener);
             quit.setOnClickListener(listener);
         }
     }
 
-
     @Override
     public void initData() {
         presenter.getUpdate();
     }
-
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.fl_title_menu:
-                drawerLayout.openDrawer(GravityCompat.START);
-                break;
-            default:
-                break;
-        }
-    }
-
 
     /**
      * 初始化侧滑菜单的状态栏
@@ -229,7 +239,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements View.On
         //YCAppBar.setStatusBarLightMode(this, R.color.colorTheme);
         //YCAppBar.setStatusBarLightMode(this, R.color.colorTheme);
     }
-
 
     /**
      * 初始化ActionBar按钮
@@ -242,7 +251,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements View.On
             actionBar.setDisplayShowTitleEnabled(false);
         }
     }
-
 
     /**
      * 初始化底部导航栏数据
@@ -284,7 +292,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements View.On
         });
     }
 
-
     /**
      * 初始化ViewPager数据
      */
@@ -304,7 +311,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements View.On
 
             @Override
             public void onPageSelected(int position) {
-                if(position>=0){
+                if (position >= 0) {
                     ctlTable.setCurrentTab(position);
                 }
             }
@@ -317,91 +324,64 @@ public class MainActivity extends BaseActivity<MainPresenter> implements View.On
         vpHome.setCurrentItem(0);
     }
 
-    /**
-     * 初始化侧滑菜单
-     */
     private void initNav() {
+
         view = navView.inflateHeaderView(R.layout.nav_header_main);
         ivAvatar = (ImageView) view.findViewById(R.id.iv_avatar);
         TextView tvUsername = (TextView) view.findViewById(R.id.tv_username);
+        tv_theme = view.findViewById(R.id.tv_theme);
         llNavHomepage = (LinearLayout) view.findViewById(R.id.ll_nav_homepage);
         llNavScanDownload = (LinearLayout) view.findViewById(R.id.ll_nav_scan_download);
         llNavFeedback = (LinearLayout) view.findViewById(R.id.ll_nav_feedback);
         llNavAbout = (LinearLayout) view.findViewById(R.id.ll_nav_about);
         llNavLogin = (LinearLayout) view.findViewById(R.id.ll_nav_login);
         llNavVideo = (LinearLayout) view.findViewById(R.id.ll_nav_video);
+        ll_dayNightTheme = view.findViewById(R.id.ll_dayNightTheme);
         ImageUtils.loadImgByPicassoWithCircle(this, R.drawable.ic_person_logo, ivAvatar);
-        tvUsername.setText("杨充");
+        tv_theme.setText("夜间模式");
+        tvUsername.setText("Spark");
     }
 
-
     /**
-     * 自定义菜单点击事件
+     * 初始化权限
      */
-    private PerfectClickListener listener = new PerfectClickListener() {
-        @Override
-        protected void onNoDoubleClick(final View v) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-            drawerLayout.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    switch (v.getId()) {
-                        case R.id.iv_avatar:
+    private void initPermissions() {
+        //权限
+        presenter.locationPermissionsTask();
+    }
 
-                            break;
-                        // 主页
-                        case R.id.ll_nav_homepage:
-                            Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
-                            intent.putExtra("url", "");
-                            startActivity(intent);
-                            break;
-                        //扫码下载
-                        case R.id.ll_nav_scan_download:
-
-                            break;
-                        // 问题反馈
-                        case R.id.ll_nav_feedback:
-                            ActivityUtils.startActivity(MeFeedBackActivity.class);
-                            break;
-                        // 关于
-                        case R.id.ll_nav_about:
-                            ActivityUtils.startActivity(AboutMeActivity.class);
-                            break;
-                        // 个人
-                        case R.id.ll_nav_login:
-                            ActivityUtils.startActivity(MePersonActivity.class);
-                            break;
-                        case R.id.ll_nav_video:
-                            ToastUtil.showToast(MainActivity.this, "后期接入讯飞语音");
-                            break;
-                        case R.id.setting:
-                            ActivityUtils.startActivity(MeSettingActivity.class);
-                            break;
-                        case R.id.quit:
-                            AppManager.getAppManager().appExit(false);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }, 0);
-        }
-    };
-
-
-    /**
-     * onBackPressed、onKeyDown和onKeyUp这三个事件的区别
-     */
     @Override
-    public void onBackPressed() {
-        Log.e("触摸监听", "onBackPressed");
-        if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu_home, menu);
+        return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_capture:
+                ToastUtil.showToast(this, "二维码扫描");
+
+                break;
+            case R.id.action_about_us:
+                ActivityUtils.startActivity(AboutMeActivity.class);
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.fl_title_menu:
+                drawerLayout.openDrawer(GravityCompat.START);
+                break;
+            default:
+                break;
+        }
+    }
 
     /**
      * 是当某个按键被按下是触发。所以也有人在点击返回键的时候去执行该方法来做判断
@@ -424,27 +404,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements View.On
             return true;
         }
         return super.onKeyDown(keyCode, event);
-    }
-
-
-    /**
-     * 初始化权限
-     */
-    private void initPermissions() {
-        //权限
-        presenter.locationPermissionsTask();
-    }
-
-    /**
-     * 将结果转发到EasyPermissions
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // 将结果转发到EasyPermissions
-        EasyPermissions.onRequestPermissionsResult(requestCode,
-                permissions, grantResults, MainActivity.this);
     }
 
     /**
@@ -485,6 +444,52 @@ public class MainActivity extends BaseActivity<MainPresenter> implements View.On
             // 当用户从应用设置界面返回的时候，可以做一些事情，比如弹出一个土司。
             Log.d("权限", "onPermissionsDenied:" + requestCode + ":");
         }
+    }
+
+    /**
+     * onBackPressed、onKeyDown和onKeyUp这三个事件的区别
+     */
+    @Override
+    public void onBackPressed() {
+        Log.e("触摸监听", "onBackPressed");
+        if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    /**
+     * 处理onNewIntent()，以通知碎片管理器 状态未保存。
+     * 如果您正在处理新的意图，并且可能是 对碎片状态进行更改时，要确保调用先到这里。
+     * 否则，如果你的状态保存，但活动未停止，则可以获得 onNewIntent()调用，发生在onResume()之前，
+     * 并试图 此时执行片段操作将引发IllegalStateException。 因为碎片管理器认为状态仍然保存。
+     *
+     * @param intent intent
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent != null) {
+            int selectIndex = intent.getIntExtra("selectIndex", HOME);
+            vpHome.setCurrentItem(selectIndex);
+        }
+    }
+
+    /**
+     * 将结果转发到EasyPermissions
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // 将结果转发到EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode,
+                permissions, grantResults, MainActivity.this);
+    }
+
+    @IntDef({HOME, FIND, DATA, USER})
+    private @interface PageIndex {
     }
 
 }

@@ -13,9 +13,11 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.IntentUtils;
 import com.blankj.utilcode.util.KeyboardUtils;
 import com.ns.yc.lifehelper.R;
+import com.ns.yc.lifehelper.base.RouterUtils;
 import com.ns.yc.lifehelper.base.mvp.BaseActivity;
 import com.ns.yc.ycmultiinputviewlib.MultiEditInputView;
 import com.pedaily.yc.ycdialoglib.customToast.ToastUtil;
@@ -31,6 +33,7 @@ import butterknife.BindView;
  * 修订历史：
  * ================================================
  */
+@Route(path = RouterUtils.MEFEEDBACK)
 public class MeFeedBackActivity extends BaseActivity implements View.OnClickListener {
 
     @BindView(R.id.ll_title_menu)

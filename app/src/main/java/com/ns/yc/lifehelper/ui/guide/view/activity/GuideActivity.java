@@ -125,7 +125,8 @@ public class GuideActivity extends BaseActivity<GuidePresenter> implements Guide
      * 直接跳转主页面
      */
     private void toMainActivity() {
-        ActivityUtils.startActivity(MainActivity.class,R.anim.screen_zoom_in,R.anim.screen_zoom_out);
+        RouterUtils.actNotParamsWithAnimation(this,RouterUtils.MAIN,
+                R.anim.screen_zoom_in,R.anim.screen_zoom_out);
         finish();
     }
 
@@ -146,7 +147,7 @@ public class GuideActivity extends BaseActivity<GuidePresenter> implements Guide
                 ivSplashAd.setBackgroundResource(R.drawable.bg_cloud_night);
             }
         };
-        LogUtils.e("图片"+logo);
+        LogUtils.e("图片:"+logo);
         ImageUtils.loadImgByPicasso(this,logo,R.drawable.bg_cloud_night,ivSplashAd,callback);
     }
 

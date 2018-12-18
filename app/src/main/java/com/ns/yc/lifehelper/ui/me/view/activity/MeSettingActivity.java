@@ -12,9 +12,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.SDCardUtils;
 import com.ns.yc.lifehelper.R;
+import com.ns.yc.lifehelper.base.RouterUtils;
 import com.ns.yc.lifehelper.base.app.BaseApplication;
 import com.ns.yc.lifehelper.base.mvp.BaseActivity;
 import com.ns.yc.lifehelper.model.bean.UpdateBean;
@@ -44,6 +46,7 @@ import cn.ycbjie.ycthreadpoollib.PoolThread;
  * </pre>
  */
 
+@Route(path = RouterUtils.MESETTING)
 public class MeSettingActivity extends BaseActivity<MeSettingPresenter> implements View.OnClickListener,
         MeSettingContract.View, SwitchButton.OnCheckedChangeListener {
 

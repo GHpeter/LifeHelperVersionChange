@@ -5,10 +5,12 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.ActivityUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.SizeUtils;
 import com.ns.yc.lifehelper.R;
+import com.ns.yc.lifehelper.base.RouterUtils;
 import com.ns.yc.lifehelper.comment.Constant;
 import com.ns.yc.lifehelper.base.mvp.BaseActivity;
 import com.ns.yc.lifehelper.inter.listener.OnListItemClickListener;
@@ -36,6 +38,7 @@ import butterknife.BindView;
  *     revise:
  * </pre>
  */
+@Route(path = RouterUtils.SELECTFOLLOW)
 public class SelectFollowActivity extends BaseActivity<SelectFollowPresenter>
         implements SelectFollowContract.View, View.OnClickListener {
 
@@ -74,6 +77,17 @@ public class SelectFollowActivity extends BaseActivity<SelectFollowPresenter>
         tvTitleRight.setText("跳过");
     }
 
+    private void initRecycleView() {
+        selectView.setLayoutManager(new GridLayoutManager(this, 4));
+        adapter = new SelectFollowAdapter(this, lists);
+        selectView.setAdapter(adapter);
+        //下划线
+        SpaceViewItemLine itemDecoration = new SpaceViewItemLine(SizeUtils.dp2px(5));
+        itemDecoration.setPaddingEdgeSide(false);
+        itemDecoration.setPaddingStart(false);
+        itemDecoration.setPaddingHeaderFooter(false);
+        selectView.addItemDecoration(itemDecoration);
+    }
 
     @Override
     public void initListener() {
@@ -106,13 +120,13 @@ public class SelectFollowActivity extends BaseActivity<SelectFollowPresenter>
                 toMainActivity();
                 break;
             case R.id.tv_clean:
-                if(adapter!=null && adapter.data!=null){
+                if (adapter != null && adapter.data != null) {
                     adapter.clearSelected();
                 }
                 break;
             case R.id.tv_start:
-                if(adapter!=null && adapter.data!=null){
-                    if(adapter.getSelectedIndices().length>0){
+                if (adapter != null && adapter.data != null) {
+                    if (adapter.getSelectedIndices().length > 0) {
                         presenter.addSelectToRealm(adapter.getSelectedIndices());
                     }
                 }
@@ -122,20 +136,6 @@ public class SelectFollowActivity extends BaseActivity<SelectFollowPresenter>
                 break;
         }
     }
-
-
-    private void initRecycleView() {
-        selectView.setLayoutManager(new GridLayoutManager(this, 4));
-        adapter = new SelectFollowAdapter(this, lists);
-        selectView.setAdapter(adapter);
-        //下划线
-        SpaceViewItemLine itemDecoration = new SpaceViewItemLine(SizeUtils.dp2px(5));
-        itemDecoration.setPaddingEdgeSide(false);
-        itemDecoration.setPaddingStart(false);
-        itemDecoration.setPaddingHeaderFooter(false);
-        selectView.addItemDecoration(itemDecoration);
-    }
-
 
     @Override
     public void refreshData(List<SelectPoint> list) {
@@ -147,7 +147,7 @@ public class SelectFollowActivity extends BaseActivity<SelectFollowPresenter>
 
     @Override
     public void toMainActivity() {
-        ActivityUtils.startActivity(MainActivity.class,R.anim.screen_zoom_in,R.anim.screen_zoom_out);
+        ActivityUtils.startActivity(MainActivity.class, R.anim.screen_zoom_in, R.anim.screen_zoom_out);
         SPUtils.getInstance(Constant.SP_NAME).put(Constant.KEY_FIRST_SPLASH, false);
         finish();
     }

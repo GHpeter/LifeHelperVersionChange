@@ -33,11 +33,14 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.facade.annotation.Autowired;
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.NetworkUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.ns.yc.lifehelper.R;
 import com.ns.yc.lifehelper.api.key.AppKey;
+import com.ns.yc.lifehelper.base.RouterUtils;
 import com.ns.yc.lifehelper.base.mvp.BaseActivity;
 import com.ns.yc.lifehelper.ui.webView.js.JsAppInterface;
 import com.ns.yc.lifehelper.utils.AppUtil;
@@ -57,6 +60,7 @@ import butterknife.BindView;
  *     revise:
  * </pre>
  */
+@Route(path = RouterUtils.WEBVIEW)
 public class WebViewActivity extends BaseActivity {
 
     @BindView(R.id.ll_title_menu)
@@ -73,6 +77,7 @@ public class WebViewActivity extends BaseActivity {
     LinearLayout llWebView;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
     private String url;
     private String name;
     private MyWebChromeClient webChromeClient;
@@ -124,6 +129,7 @@ public class WebViewActivity extends BaseActivity {
                 return true;
             } else {
                 //退出网页
+
                 mWebView.loadUrl("about:blank");
                 finish();
             }
@@ -141,7 +147,7 @@ public class WebViewActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(url==null || url.length()==0){
-            url = "about:blank";
+            url = "https://blog.csdn.net/u012304076/";
         }
         switch (item.getItemId()) {
             case R.id.share:

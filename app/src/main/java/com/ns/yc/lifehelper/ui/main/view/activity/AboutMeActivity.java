@@ -8,7 +8,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ns.yc.lifehelper.R;
+import com.ns.yc.lifehelper.base.RouterUtils;
 import com.ns.yc.lifehelper.base.mvp.BaseActivity;
 
 import butterknife.BindView;
@@ -22,6 +24,7 @@ import butterknife.BindView;
  * 修订历史：
  * ================================================
  */
+@Route(path = RouterUtils.ABOUTME)
 public class AboutMeActivity extends BaseActivity implements View.OnClickListener {
 
 

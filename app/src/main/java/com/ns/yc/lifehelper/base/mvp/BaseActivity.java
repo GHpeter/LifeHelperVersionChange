@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.blankj.utilcode.util.NetworkUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.ns.yc.lifehelper.base.app.BaseApplication;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -65,8 +66,8 @@ public abstract class BaseActivity<T extends BasePresenter> extends AppCompatAct
      * 用来检测所有Activity的内存泄漏
      */
     private void initLeakCanary() {
-        /*RefWatcher refWatcher = BaseApplication.getRefWatcher(this);
-        refWatcher.watch(this);*/
+//        RefWatcher refWatcher = BaseApplication.getRefWatcher(this);
+//        refWatcher.watch(this);
     }
 
     /**

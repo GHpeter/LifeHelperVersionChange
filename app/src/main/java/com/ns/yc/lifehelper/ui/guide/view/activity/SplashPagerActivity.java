@@ -104,7 +104,7 @@ public class SplashPagerActivity extends BaseActivity {
         btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActivityUtils.startActivity(SelectFollowActivity.class);
+                RouterUtils.actNotParams(RouterUtils.SELECTFOLLOW);
                 finish();
                 SPUtils.getInstance(Constant.SP_NAME).put(Constant.KEY_FIRST_SPLASH, false);
             }

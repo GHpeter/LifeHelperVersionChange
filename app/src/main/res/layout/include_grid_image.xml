@@ -30,7 +30,7 @@
             android:layout_marginLeft="5dp"
             android:text="杨充"
             android:textColor="@color/blackText1"
-            android:textSize="@dimen/textSize14" />
+            android:textSize="@dimen/sp_14" />
         <Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:text="12:30"
             android:textColor="@color/blackText2"
-            android:textSize="@dimen/textSize14" />
+            android:textSize="@dimen/sp_14" />
     </LinearLayout>
 
     <TextView
@@ -101,7 +101,7 @@
             android:gravity="center"
             android:text="保存图文"
             android:textColor="@color/blackText1"
-            android:textSize="@dimen/textSize14" />
+            android:textSize="@dimen/sp_14" />
         <View
             android:layout_width="1dp"
             android:layout_height="30dp"
@@ -116,7 +116,7 @@
             android:gravity="center"
             android:text="分享"
             android:textColor="@color/blackText1"
-            android:textSize="@dimen/textSize14" />
+            android:textSize="@dimen/sp_14" />
     </LinearLayout>
 
 </LinearLayout>

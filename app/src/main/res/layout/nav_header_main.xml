@@ -214,6 +214,7 @@
 
 
         <LinearLayout
+            android:id="@+id/ll_dayNightTheme"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@drawable/ripple_one_item_bg"
@@ -227,6 +228,7 @@
                 android:layout_height="20dp"
                 android:src="@drawable/ic_nav_lamp" />
             <TextView
+                android:id="@+id/tv_theme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
