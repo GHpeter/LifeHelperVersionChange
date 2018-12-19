@@ -22,10 +22,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.NetworkUtils;
 import com.blankj.utilcode.util.SizeUtils;
 import com.bumptech.glide.Glide;
 import com.ns.yc.lifehelper.R;
+import com.ns.yc.lifehelper.base.RouterUtils;
 import com.ns.yc.lifehelper.comment.Constant;
 import com.ns.yc.lifehelper.base.mvp.BaseActivity;
 import com.ns.yc.lifehelper.ui.webView.view.WebViewQQActivity;
@@ -46,6 +48,7 @@ import jp.wasabeef.glide.transformations.BlurTransformation;
  * @author yc
  * @date 2018/2/27
  */
+@Route(path = RouterUtils.VIDEONEWS)
 public class VideoNewsActivity extends BaseActivity implements TxWeChatContract.View, View.OnClickListener {
 
 

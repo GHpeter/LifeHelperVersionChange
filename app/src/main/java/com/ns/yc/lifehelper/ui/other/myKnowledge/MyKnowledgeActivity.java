@@ -12,7 +12,9 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ns.yc.lifehelper.R;
+import com.ns.yc.lifehelper.base.RouterUtils;
 import com.ns.yc.lifehelper.base.adapter.BasePagerAdapter;
 import com.ns.yc.lifehelper.ui.other.myKnowledge.fragment.KnowledgeAndroidFragment;
 import com.ns.yc.lifehelper.ui.other.myKnowledge.fragment.KnowledgeCustomFragment;
@@ -33,8 +35,10 @@ import butterknife.ButterKnife;
  * 修订历史：
  * ================================================
  */
+@Route(path = RouterUtils.MYKNOWLEDGE)
 public class MyKnowledgeActivity extends FragmentActivity implements View.OnClickListener {
 
+    public boolean backHandled;
     @BindView(R.id.ll_title_menu)
     FrameLayout llTitleMenu;
     @BindView(R.id.toolbar_title)
@@ -45,10 +49,33 @@ public class MyKnowledgeActivity extends FragmentActivity implements View.OnClic
     TabLayout tabLayout;
     @BindView(R.id.vp_content)
     ViewPager vpContent;
-
-
     private ArrayList<String> mTitleList = new ArrayList<>();
     private ArrayList<Fragment> mFragments = new ArrayList<>();
+    private long lastBackPress;
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.ll_title_menu:
+                finish();
+                break;
+            case R.id.ll_search:
+
+                break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!BackHandlerHelper.handleBackPress(this)) {
+            if (System.currentTimeMillis() - lastBackPress < 1000) {
+                super.onBackPressed();
+            } else {
+                lastBackPress = System.currentTimeMillis();
+                finish();
+            }
+        }
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,12 +103,6 @@ public class MyKnowledgeActivity extends FragmentActivity implements View.OnClic
         initViewPagerAndTab();
     }
 
-    private void initToolBar() {
-        toolbarTitle.setText("干货集中营");
-        llSearch.setVisibility(View.VISIBLE);
-    }
-
-
     public void initListener() {
         llTitleMenu.setOnClickListener(this);
         llSearch.setOnClickListener(this);
@@ -91,16 +112,9 @@ public class MyKnowledgeActivity extends FragmentActivity implements View.OnClic
 
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.ll_title_menu:
-                finish();
-                break;
-            case R.id.ll_search:
-
-                break;
-        }
+    private void initToolBar() {
+        toolbarTitle.setText("干货集中营");
+        llSearch.setVisibility(View.VISIBLE);
     }
 
     private void initFragmentList() {
@@ -117,8 +131,6 @@ public class MyKnowledgeActivity extends FragmentActivity implements View.OnClic
         mFragments.add(new KnowledgeOtherFragment());
         mFragments.add(new KnowledgeVideoFragment());
     }
-
-
 
     private void initViewPagerAndTab() {
         /**
@@ -142,9 +154,9 @@ public class MyKnowledgeActivity extends FragmentActivity implements View.OnClic
 
             @Override
             public void onPageSelected(int position) {
-                if(position==3){
+                if (position == 3) {
                     backHandled = true;
-                }else {
+                } else {
                     backHandled = false;
                 }
             }
@@ -154,21 +166,6 @@ public class MyKnowledgeActivity extends FragmentActivity implements View.OnClic
 
             }
         });
-    }
-
-
-    private long lastBackPress;
-    public boolean backHandled;
-    @Override
-    public void onBackPressed() {
-        if (!BackHandlerHelper.handleBackPress(this)) {
-            if (System.currentTimeMillis() - lastBackPress < 1000) {
-                super.onBackPressed();
-            } else {
-                lastBackPress = System.currentTimeMillis();
-                finish();
-            }
-        }
     }
 
 }

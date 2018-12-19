@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.blankj.utilcode.util.NetworkUtils;
 import com.blankj.utilcode.util.SizeUtils;
 import com.ns.yc.lifehelper.R;
+import com.ns.yc.lifehelper.base.RouterUtils;
 import com.ns.yc.lifehelper.base.adapter.BaseBannerPagerAdapter;
 import com.ns.yc.lifehelper.base.mvp.BaseFragment;
 import com.ns.yc.lifehelper.model.bean.HomeBlogEntity;
@@ -45,6 +46,7 @@ import org.yczbj.ycrefreshviewlib.item.RecycleViewItemLine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 
@@ -73,19 +75,19 @@ public class HomeFragment extends BaseFragment<HomeFragmentPresenter> implements
     private CardViewLayout cardViewLayout;
 
     @SuppressLint("HandlerLeak")
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case 1:
-                    if (cardViewLayout!=null){
+                    if (cardViewLayout != null) {
                         cardViewLayout.setVisibility(View.VISIBLE);
                     }
                     updateGalleryView();
                     break;
                 case 2:
-                    if (cardViewLayout!=null){
+                    if (cardViewLayout != null) {
                         cardViewLayout.setVisibility(View.GONE);
                     }
                     break;
@@ -104,10 +106,10 @@ public class HomeFragment extends BaseFragment<HomeFragmentPresenter> implements
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        if (activity != null) {
-            activity = null;
+    public void onResume() {
+        super.onResume();
+        if (banner != null) {
+            banner.resume();
         }
     }
 
@@ -120,25 +122,26 @@ public class HomeFragment extends BaseFragment<HomeFragmentPresenter> implements
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (banner != null) {
-            banner.resume();
+    public void onDetach() {
+        super.onDetach();
+        if (activity != null) {
+            activity = null;
         }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(handler!=null){
+        if (handler != null) {
             handler.removeCallbacksAndMessages(null);
             handler = null;
         }
     }
 
     @Override
-    public int getContentView() {
-        return R.layout.base_easy_recycle;
+    public void initData() {
+        presenter.getHomeNewsData();
+        presenter.getGalleryData();
     }
 
     @Override
@@ -152,23 +155,22 @@ public class HomeFragment extends BaseFragment<HomeFragmentPresenter> implements
             @Override
             public void onItemClick(int position) {
                 if (position > 0 && adapter.getAllData().size() > position) {
-                    Intent intent = new Intent(activity, WebViewActivity.class);
-                    intent.putExtra("url", adapter.getAllData().get(position).getUrl());
-                    startActivity(intent);
+
+                    String[] key = new String[]{"url"};
+                    String[] values = new String[]{adapter.getAllData().get(position).getUrl()};
+                    RouterUtils.actWithParams(RouterUtils.WEBVIEW, key, values);
+
                 } else if (position == 0) {
-                    startActivity(ZhiHuNewsActivity.class);
+                    RouterUtils.actNotParams(RouterUtils.ZHIHUNEWS);
                 }
             }
         });
     }
 
-
     @Override
-    public void initData() {
-        presenter.getHomeNewsData();
-        presenter.getGalleryData();
+    public int getContentView() {
+        return R.layout.base_easy_recycle;
     }
-
 
     private void initRecycleView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
@@ -189,7 +191,7 @@ public class HomeFragment extends BaseFragment<HomeFragmentPresenter> implements
                     }
                 } else {
                     recyclerView.setRefreshing(false);
-                    ToastUtil.showToast(activity,"网络不可用");
+                    ToastUtil.showToast(activity, "网络不可用");
                 }
             }
         });
@@ -218,16 +220,16 @@ public class HomeFragment extends BaseFragment<HomeFragmentPresenter> implements
                     public void onClick(View v) {
                         switch (v.getId()) {
                             case R.id.tv_home_first:
-                                startActivity(VideoNewsActivity.class);
+                                RouterUtils.actNotParams(RouterUtils.VIDEONEWS);
                                 break;
                             case R.id.tv_home_second:
-                                startActivity(WyNewsActivity.class);
+                                RouterUtils.actNotParams(RouterUtils.WYNEWS);
                                 break;
                             case R.id.tv_home_third:
-                                startActivity(TxNewsActivity.class);
+                                RouterUtils.actNotParams(RouterUtils.TXNEWS);
                                 break;
                             case R.id.tv_home_four:
-                                startActivity(MyKnowledgeActivity.class);
+                                RouterUtils.actNotParams(RouterUtils.MYKNOWLEDGE);
                                 break;
                             default:
                                 break;
@@ -274,14 +276,16 @@ public class HomeFragment extends BaseFragment<HomeFragmentPresenter> implements
                         DialogUtils.showCustomPopupWindow(activity);
                         break;
                     case 1:
-                        Intent intent1 = new Intent(activity, WebViewActivity.class);
-                        intent1.putExtra("url", "https://github.com/yangchong211");
-                        startActivity(intent1);
+
+                        String[] key = new String[]{"url"};
+                        String[] values = new String[]{"https://github.com/yangchong211"};
+                        RouterUtils.actWithParams(RouterUtils.WEBVIEW, key, values);
                         break;
                     case 2:
-                        Intent intent2 = new Intent(activity, WebViewActivity.class);
-                        intent2.putExtra("url", "http://www.ximalaya.com/zhubo/71989305/");
-                        startActivity(intent2);
+                        String[] keyStr = new String[]{"url"};
+                        String[] valuesStr = new String[]{"http://www.ximalaya.com/zhubo/71989305/"};
+                        RouterUtils.actWithParams(RouterUtils.WEBVIEW, keyStr, valuesStr);
+
                         break;
                     default:
                         break;
@@ -297,35 +301,36 @@ public class HomeFragment extends BaseFragment<HomeFragmentPresenter> implements
             adapter.clear();
             adapter.addAll(list);
             adapter.notifyDataSetChanged();
-            recyclerView.scrollTo(0,0);
+            recyclerView.scrollTo(0, 0);
             recyclerView.setRefreshing(false);
         }
     }
 
     @Override
     public void downloadBitmapSuccess(final ArrayList<Bitmap> bitmapList) {
-        if(bitmapList!=null && bitmapList.size()>0){
+        if (bitmapList != null && bitmapList.size() > 0) {
             bitmaps = bitmapList;
-            handler.sendEmptyMessageAtTime(1,500);
-        }else {
-            handler.sendEmptyMessageAtTime(2,500);
+            handler.sendEmptyMessageAtTime(1, 500);
+        } else {
+            handler.sendEmptyMessageAtTime(2, 500);
         }
     }
 
 
     private void updateGalleryView() {
-        if(cardViewLayout==null || bitmaps==null || bitmaps.size()==0){
+        if (cardViewLayout == null || bitmaps == null || bitmaps.size() == 0) {
             return;
         }
         cardViewLayout.setAdapter(new CardViewLayout.Adapter() {
 
-            class ViewHolder {
-                ImageView imageView;
-            }
-
             @Override
             public int getLayoutId() {
                 return R.layout.item_card_layout;
+            }
+
+            @Override
+            public int getItemCount() {
+                return bitmaps.size();
             }
 
             @Override
@@ -340,11 +345,6 @@ public class HomeFragment extends BaseFragment<HomeFragmentPresenter> implements
             }
 
             @Override
-            public int getItemCount() {
-                return bitmaps.size();
-            }
-
-            @Override
             public void displaying(int position) {
 
             }
@@ -352,7 +352,11 @@ public class HomeFragment extends BaseFragment<HomeFragmentPresenter> implements
             @Override
             public void onItemClick(View view, int position) {
                 super.onItemClick(view, position);
-                ToastUtil.showToast(activity,"点击了"+position);
+                ToastUtil.showToast(activity, "点击了" + position);
+            }
+
+            class ViewHolder {
+                ImageView imageView;
             }
         });
     }

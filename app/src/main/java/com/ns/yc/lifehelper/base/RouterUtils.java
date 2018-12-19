@@ -8,6 +8,7 @@ import android.os.Build;
 import com.alibaba.android.arouter.facade.Postcard;
 import com.alibaba.android.arouter.launcher.ARouter;
 
+
 /**
  * @author ：Create by lichunfu
  * @Date : 2018/12/17
@@ -26,12 +27,17 @@ public class RouterUtils {
     public static final String MAIN = INDEXROUTER + "Main";
     public static final String SELECTFOLLOW = INDEXROUTER + "SelectFollow";
     public static final String WEBVIEW = INDEXROUTER + "Webview";
-    public  static  final  String MEFEEDBACK=INDEXROUTER+"MeFeedBack";
-    public  static  final  String ABOUTME=INDEXROUTER+"AboutMe";
-    public  static  final  String MEPERSON=INDEXROUTER+"MePerson";
-    public  static  final  String MESETTING=INDEXROUTER+"MeSetting";
+    public static final String MEFEEDBACK = INDEXROUTER + "MeFeedBack";
+    public static final String ABOUTME = INDEXROUTER + "AboutMe";
+    public static final String MEPERSON = INDEXROUTER + "MePerson";
+    public static final String MESETTING = INDEXROUTER + "MeSetting";
+    public static final String ZHIHUNEWS = INDEXROUTER + "ZhiHuNews";
+    public static final String VIDEONEWS = INDEXROUTER + "VideoNews";
 
 
+    public static final String WYNEWS = INDEXROUTER + "WyNews";
+    public  static  final  String TXNEWS=INDEXROUTER+"TxNews";
+    public  static  final  String MYKNOWLEDGE=INDEXROUTER+"MyKnowledge";
     public static void actNotParams(String path) {
         ARouter.getInstance().build(path).navigation();
 
@@ -66,7 +72,6 @@ public class RouterUtils {
     }
 
     /**
-     *
      * @param context:上下文
      * @param path:router路由路径
      * @param strKey:key值数组
@@ -74,9 +79,9 @@ public class RouterUtils {
      * @param enterAnim:入场动画
      * @param exitAnim:退出动画
      */
-    public static void actWithParamsAndAnimation(Context context,String path, String[] strKey,
+    public static void actWithParamsAndAnimation(Context context, String path, String[] strKey,
                                                  Object[] objects,
-                                                 int enterAnim,int exitAnim) {
+                                                 int enterAnim, int exitAnim) {
         Postcard postcard = ARouter.getInstance().build(path);
         for (int i = 0; i < objects.length; i++) {
             if (objects[i] instanceof String) {
@@ -94,12 +99,11 @@ public class RouterUtils {
 
         }
 
-        postcard. withTransition(enterAnim, exitAnim).navigation();
+        postcard.withTransition(enterAnim, exitAnim).navigation();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN && context instanceof Activity) {
             ((Activity) context).overridePendingTransition(enterAnim, exitAnim);
         }
     }
-
 
 
 }

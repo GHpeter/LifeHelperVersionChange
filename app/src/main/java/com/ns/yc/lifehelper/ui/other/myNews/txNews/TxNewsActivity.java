@@ -8,7 +8,9 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ns.yc.lifehelper.R;
+import com.ns.yc.lifehelper.base.RouterUtils;
 import com.ns.yc.lifehelper.base.mvp.BaseActivity;
 import com.ns.yc.lifehelper.base.adapter.BasePagerAdapter;
 import com.ns.yc.lifehelper.ui.other.myNews.txNews.view.TxNewsFragment;
@@ -26,6 +28,8 @@ import butterknife.BindView;
  * 修订历史：
  * ================================================
  */
+
+@Route(path = RouterUtils.TXNEWS)
 public class TxNewsActivity extends BaseActivity implements View.OnClickListener {
 
     @BindView(R.id.ll_title_menu)

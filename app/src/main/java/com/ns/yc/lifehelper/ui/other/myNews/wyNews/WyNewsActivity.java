@@ -8,8 +8,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ns.yc.lifehelper.R;
 import com.ns.yc.lifehelper.api.constantApi.ConstantALiYunApi;
+import com.ns.yc.lifehelper.base.RouterUtils;
 import com.ns.yc.lifehelper.base.mvp.BaseActivity;
 import com.ns.yc.lifehelper.base.app.BaseApplication;
 import com.ns.yc.lifehelper.base.adapter.BasePagerAdapter;
@@ -37,6 +39,8 @@ import rx.schedulers.Schedulers;
  * 修订历史：
  * ================================================
  */
+
+@Route(path = RouterUtils.WYNEWS)
 public class WyNewsActivity extends BaseActivity implements View.OnClickListener {
 
     @BindView(R.id.ll_title_menu)
@@ -53,7 +57,7 @@ public class WyNewsActivity extends BaseActivity implements View.OnClickListener
     private Realm realm;
     private List<String> channel;
     private RealmResults<CacheTodayChannel> cacheTodayChannels;
-
+    private String[] titles = {"头条", "新闻", "财经", "体育", "娱乐", "军事", "教育", "科技", "NBA", "股票", "星座", "女性", "健康", "育儿"};
 
     @Override
     protected void onDestroy() {
@@ -77,46 +81,37 @@ public class WyNewsActivity extends BaseActivity implements View.OnClickListener
         initViewPagerAndTab();
     }
 
-    private void initRealm() {
-        if(realm == null){
-            realm = BaseApplication.getInstance().getRealmHelper();
-        }
-    }
-
     private void initToolBar() {
         toolbarTitle.setText("头条新闻");
     }
 
-    @Override
-    public void initListener() {
-        llTitleMenu.setOnClickListener(this);
-    }
-
-    @Override
-    public void initData() {
-        getTodayDataChanel();
-    }
-
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.ll_title_menu:
-                finish();
-                break;
+    private void initRealm() {
+        if (realm == null) {
+            realm = BaseApplication.getInstance().getRealmHelper();
         }
     }
 
+    private void readCacheChannel() {
+        initRealm();
+        if (realm != null && realm.where(CacheTodayChannel.class).findAll() != null) {
+            cacheTodayChannels = realm.where(CacheTodayChannel.class).findAll();
+        } else {
+            return;
+        }
+        channel = new ArrayList<>();
+        for (int a = 0; a < cacheTodayChannels.size(); a++) {
+            channel.add(cacheTodayChannels.get(a).getChannel());
+        }
+    }
 
-    private String[] titles = {"头条","新闻","财经","体育","娱乐","军事","教育","科技","NBA","股票","星座","女性","健康","育儿"};
     private void initFragmentList() {
-        if(channel!=null && channel.size()>0){
-            for(int a=0 ; a<channel.size() ; a++){
+        if (channel != null && channel.size() > 0) {
+            for (int a = 0; a < channel.size(); a++) {
                 mTitleList.add(channel.get(a));
                 mFragments.add(WyNewsFragment.newInstance(channel.get(a)));
             }
-        }else {
-            for(int a=0 ; a<titles.length ; a++){
+        } else {
+            for (int a = 0; a < titles.length; a++) {
                 mTitleList.add(titles[a]);
                 mFragments.add(WyNewsFragment.newInstance(titles[a]));
             }
@@ -139,6 +134,15 @@ public class WyNewsActivity extends BaseActivity implements View.OnClickListener
         tabLayout.setupWithViewPager(vpContent);
     }
 
+    @Override
+    public void initListener() {
+        llTitleMenu.setOnClickListener(this);
+    }
+
+    @Override
+    public void initData() {
+        getTodayDataChanel();
+    }
 
     private void getTodayDataChanel() {
         TodayNewsModel model = TodayNewsModel.getInstance(WyNewsActivity.this);
@@ -158,9 +162,9 @@ public class WyNewsActivity extends BaseActivity implements View.OnClickListener
 
                     @Override
                     public void onNext(TodayNewsChannel todayNewsChannel) {
-                        if(todayNewsChannel!=null && todayNewsChannel.getResult()!=null && todayNewsChannel.getResult().size()>0){
+                        if (todayNewsChannel != null && todayNewsChannel.getResult() != null && todayNewsChannel.getResult().size() > 0) {
                             List<String> result = todayNewsChannel.getResult();
-                            if(result!=null && result.size()>0){
+                            if (result != null && result.size() > 0) {
                                 startCacheChannel(result);
                             }
                         }
@@ -168,24 +172,9 @@ public class WyNewsActivity extends BaseActivity implements View.OnClickListener
                 });
     }
 
-
-    private void readCacheChannel() {
-        initRealm();
-        if(realm !=null && realm.where(CacheTodayChannel.class).findAll()!=null){
-            cacheTodayChannels = realm.where(CacheTodayChannel.class).findAll();
-        } else {
-            return;
-        }
-        channel = new ArrayList<>();
-        for(int a = 0; a< cacheTodayChannels.size() ; a++){
-            channel.add(cacheTodayChannels.get(a).getChannel());
-        }
-    }
-
-
     private void startCacheChannel(List<String> result) {
         initRealm();
-        if(realm !=null && realm.where(CacheTodayChannel.class).findAll()!=null){
+        if (realm != null && realm.where(CacheTodayChannel.class).findAll() != null) {
             cacheTodayChannels = realm.where(CacheTodayChannel.class).findAll();
         } else {
             return;
@@ -194,11 +183,20 @@ public class WyNewsActivity extends BaseActivity implements View.OnClickListener
         cacheTodayChannels.deleteAllFromRealm();
         realm.commitTransaction();
         realm.beginTransaction();
-        for(int a=0 ; a<result.size() ; a++){
+        for (int a = 0; a < result.size(); a++) {
             CacheTodayChannel news = realm.createObject(CacheTodayChannel.class);
             news.setChannel(result.get(a));
         }
         realm.commitTransaction();
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.ll_title_menu:
+                finish();
+                break;
+        }
     }
 
 

@@ -364,7 +364,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements View.On
 
                 break;
             case R.id.action_about_us:
-                ActivityUtils.startActivity(AboutMeActivity.class);
+                RouterUtils.actNotParams(RouterUtils.ABOUTME);
                 break;
             default:
                 break;

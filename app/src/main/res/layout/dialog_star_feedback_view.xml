@@ -1,67 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="290dp"
-        android:layout_height="352dp"
-        android:orientation="vertical"
-        android:background="@drawable/popup_haoping_ditu2x">
+
+        android:layout_width="@dimen/x580"
+        android:layout_height="@dimen/y710"
+        android:background="@drawable/popup_haoping_ditu2x"
+        android:orientation="vertical">
+
         <TextView
-            android:layout_marginTop="96dp"
-            android:layout_width="195dp"
-            android:layout_height="60dp"
+            android:layout_width="@dimen/x390"
+            android:layout_height="@dimen/y120"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/y192"
             android:gravity="center"
-            android:textSize="18sp"
+            android:text="对软件有什么想法没?"
             android:textColor="@color/blackText1"
-            android:text="对我们APP有什么看法有什么看法?"/>
+            android:textSize="@dimen/sp_18" />
+
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/grayLine"/>
+            android:layout_height="@dimen/y2"
+            android:background="@color/grayLine" />
+
         <TextView
             android:id="@+id/tv_star"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
             android:layout_gravity="center_horizontal"
-            android:drawableLeft="@drawable/popup_biaoqing2x"
-            android:drawablePadding="5dp"
-            android:textSize="17sp"
-            android:text="走起，五星好评"/>
+            android:layout_weight="1"
+            android:drawableRight="@drawable/popup_biaoqing2x"
+            android:drawablePadding="@dimen/x10"
+            android:gravity="center"
+            android:text="五星好评走起"
+            android:textSize="@dimen/sp_17" />
+
         <View
-            android:layout_width="200dp"
+            android:layout_width="@dimen/x400"
             android:layout_height="0.5dp"
             android:layout_gravity="center"
-            android:background="@color/grayLine"/>
+            android:background="@color/grayLine" />
+
         <TextView
             android:id="@+id/tv_feedback"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:gravity="center"
-            android:layout_gravity="center_horizontal"
-            android:textSize="17sp"
-            android:text="什么鬼，我要吐槽"/>
+            android:text="什么鬼，我要吐槽"
+            android:textSize="@dimen/sp_17" />
+
         <View
-            android:layout_width="200dp"
+            android:layout_width="@dimen/x400"
             android:layout_height="0.5dp"
             android:layout_gravity="center"
-            android:background="@color/grayLine"/>
+            android:background="@color/grayLine" />
+
         <TextView
             android:id="@+id/tv_look"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
+            android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:gravity="center"
-            android:layout_gravity="center_horizontal"
-            android:textSize="17sp"
-            android:text="退下，看看再说"/>
+            android:text="退下，看看再说"
+            android:textSize="@dimen/sp_17" />
     </LinearLayout>
 
 </FrameLayout>

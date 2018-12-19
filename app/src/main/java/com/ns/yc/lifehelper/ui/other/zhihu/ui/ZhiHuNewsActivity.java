@@ -8,8 +8,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
 import com.blankj.utilcode.util.SizeUtils;
 import com.ns.yc.lifehelper.R;
+import com.ns.yc.lifehelper.base.RouterUtils;
 import com.ns.yc.lifehelper.base.adapter.BasePagerAdapter;
 import com.ns.yc.lifehelper.base.mvp.BaseActivity;
 import com.ns.yc.lifehelper.ui.other.zhihu.ui.fragment.ZhiHuDailyFragment;
@@ -31,6 +33,7 @@ import butterknife.BindView;
  *     revise:
  * </pre>
  */
+@Route(path = RouterUtils.ZHIHUNEWS)
 public class ZhiHuNewsActivity extends BaseActivity implements View.OnClickListener {
 
     @BindView(R.id.ll_title_menu)
